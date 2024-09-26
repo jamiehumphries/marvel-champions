@@ -49,6 +49,7 @@ const iceman = cardSet("Iceman");
 const jubilee = cardSet("Jubilee");
 const nightcrawler = cardSet("Nightcrawler");
 const magneto = cardSet("Magneto");
+const agentsOfShield = cardSet("Agents of S.H.I.E.L.D.", true);
 
 // MODULES
 
@@ -309,6 +310,12 @@ const scenarios = [
     scenario("Apocalypse", ["Dark Riders", "Infinites"], "#305496", { required: "Prelates", hasBack }),
     scenario("Dark Beast", ["Dystopian Nightmare"], "#808080", { required: ["Blue Moon", "Genosha", "Savage Land"] }),
     scenario("En Sabah Nur", ["Celestial Tech", "Clan Akkaba"], "#1e365e", { hasBack, hasGiantForm }),
+  ),
+  agentsOfShield(
+    scenario("Black Widow", 0, "#404040"),
+    scenario("Batroc", 0, "#9f5b33"),
+    scenario("M.O.D.O.K.", 0, "#ffc000"),
+    scenario("Thunderbolts", 0, "#0070c0"),
   ),
 ];
 
