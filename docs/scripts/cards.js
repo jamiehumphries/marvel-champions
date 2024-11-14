@@ -424,6 +424,9 @@ const heroes = [
   hero("Jubilee", JUSTICE, "#fcf600"),
   hero("Nightcrawler", PROTECTION, "#c00000"),
   hero("Magneto", LEADERSHIP, "#c7d0db"),
+  agentsOfShield(
+    hero("Maria Hill", LEADERSHIP, "#404040"),
+  ),
 ];
 
 function flatten(cardsOrSets) {
