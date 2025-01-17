@@ -362,7 +362,7 @@ const heroes = [
     hero("Captain Marvel", LEADERSHIP, "#0070c0"),
     hero("She-Hulk", AGGRESSION, "#00b050"),
     hero("Iron Man", AGGRESSION, "#ffc000"),
-    hero("Black Panther", PROTECTION, "#404040"),
+    hero("Black Panther", PROTECTION, "#404040", { alterEgo: "T’Challa" }),
   ),
   hero("Captain America", LEADERSHIP, "#0070c0"),
   hero("Ms. Marvel", PROTECTION, "#ff0000"),

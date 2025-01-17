@@ -9,6 +9,7 @@ import {
 import {
   initializeStorage,
   clearStorage,
+  createBookmarkUrl,
   getBookmarkUrl,
   clearUserId,
   setUserId,
@@ -867,7 +868,7 @@ async function initialize() {
   settingsButton.addEventListener("click", () => toggleSettings());
 
   createBookmarkUrlButton.addEventListener("click", async () => {
-    const url = await getBookmarkUrl();
+    const url = await createBookmarkUrl();
     bookmarkUrlElement.innerText = url;
   });
 
@@ -894,10 +895,15 @@ async function initialize() {
     }
   });
 
-  const bookmarkUrl = await initializeStorage();
+  await initializeStorage();
+  const bookmarkUrl = await getBookmarkUrl();
   bookmarkUrlElement.innerText = bookmarkUrl;
+
   settings.initialize();
-  sections.map((section) => section.initialize());
+
+  for (const section of sections) {
+    section.initialize();
+  }
 
   for (const section of [scenarioSection, ...heroSections]) {
     const slot = section.slots[0];

@@ -7,6 +7,7 @@ import {
   getDoc,
   setDoc,
   deleteDoc,
+  deleteField,
 } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js";
 
 const app = initializeApp({
@@ -31,17 +32,16 @@ window.updateTimeoutId = null;
 
 async function initializeStorage() {
   const userDoc = getUserDoc();
-  if (!userDoc) {
-    return null;
+  if (userDoc) {
+    localStorage.clear();
+    setUserId(userDoc.id);
+    const snapshot = await getDoc(userDoc);
+    const data = snapshot.data() || {};
+    for (const [key, value] of Object.entries(data)) {
+      localStorage.setItem(LOCAL_KEY_PREFIX + key, value);
+    }
   }
-  localStorage.clear();
-  setUserId(userDoc.id);
-  const snapshot = await getDoc(userDoc);
-  const data = snapshot.data() || {};
-  for (const [key, value] of Object.entries(data)) {
-    localStorage.setItem(LOCAL_KEY_PREFIX + key, value);
-  }
-  return await getBookmarkUrl();
+  runMigrations();
 }
 
 async function clearStorage() {
@@ -52,21 +52,26 @@ async function clearStorage() {
   }
 }
 
+async function createBookmarkUrl() {
+  const localPrefixPattern = new RegExp("^" + LOCAL_KEY_PREFIX);
+  const dataEntries = Object.entries(localStorage).filter(([key, _]) =>
+    localPrefixPattern.test(key),
+  );
+  const data = Object.fromEntries(
+    dataEntries.map(([key, value]) => [
+      key.replace(localPrefixPattern, ""),
+      value,
+    ]),
+  );
+  const doc = await addDoc(users, data);
+  setUserId(doc.id);
+  return getBookmarkUrl();
+}
+
 async function getBookmarkUrl() {
-  let userId = getUserId();
+  const userId = getUserId();
   if (!userId) {
-    const localPrefixPattern = new RegExp("^" + LOCAL_KEY_PREFIX);
-    const dataEntries = Object.entries(localStorage).filter(([key, _]) =>
-      localPrefixPattern.test(key),
-    );
-    const data = Object.fromEntries(
-      dataEntries.map(([key, value]) => [
-        key.replace(localPrefixPattern, ""),
-        value,
-      ]),
-    );
-    const doc = await addDoc(users, data);
-    userId = setUserId(doc.id);
+    return null;
   }
   const url = new URL(window.location.origin);
   url.searchParams.append("id", userId);
@@ -85,7 +90,6 @@ function getUserId() {
 function setUserId(value) {
   localStorage.setItem(USER_ID_KEY, value);
   document.body.classList.add(HAS_USER_ID);
-  return value;
 }
 
 function clearUserId() {
@@ -97,10 +101,17 @@ function getItem(key) {
   return JSON.parse(localStorage.getItem(LOCAL_KEY_PREFIX + key));
 }
 
-function setItem(key, value) {
-  value = JSON.stringify(value);
+function setItem(key, value, stringify = true) {
+  if (stringify) {
+    value = JSON.stringify(value);
+  }
   localStorage.setItem(LOCAL_KEY_PREFIX + key, value);
   updateDb(key, value);
+}
+
+function removeItem(key) {
+  localStorage.removeItem(LOCAL_KEY_PREFIX + key);
+  updateDb(key, deleteField());
 }
 
 function updateDb(key, value) {
@@ -124,9 +135,39 @@ function updateDb(key, value) {
   }, 500);
 }
 
+function runMigrations() {
+  migrate("black-panther", "black-panther-tchalla");
+}
+
+function migrate(oldId, newId) {
+  const migrationKey = `migration--${oldId}--${newId}`;
+  const hasMigrated = getItem(migrationKey);
+  if (hasMigrated) {
+    return;
+  }
+
+  const oldIdRegex = new RegExp(`${oldId}(?=(?:$|--|"))`, "g");
+  for (let [key, value] of Object.entries(localStorage)) {
+    key = key.slice(LOCAL_KEY_PREFIX.length);
+    if (oldIdRegex.test(key)) {
+      const newKey = key.replaceAll(oldIdRegex, newId);
+      setItem(newKey, value, false);
+      removeItem(key);
+      key = newKey;
+    }
+    if (oldIdRegex.test(value)) {
+      const newValue = value.replaceAll(oldIdRegex, newId);
+      setItem(key, newValue, false);
+    }
+  }
+
+  setItem(migrationKey, true);
+}
+
 export {
   initializeStorage,
   clearStorage,
+  createBookmarkUrl,
   getBookmarkUrl,
   getItem,
   setItem,
