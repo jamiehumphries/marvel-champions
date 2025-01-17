@@ -50,6 +50,7 @@ const jubilee = cardSet("Jubilee");
 const nightcrawler = cardSet("Nightcrawler");
 const magneto = cardSet("Magneto");
 const agentsOfShield = cardSet("Agents of S.H.I.E.L.D.", true);
+const blackPanther = cardSet("Black Panther");
 
 // MODULES
 
@@ -202,6 +203,9 @@ const modules = [
   ),
   magneto(
     module("Hellfire", { isLandscape }),
+  ),
+  blackPanther(
+    module("Extreme Risk"),
   ),
 ];
 
@@ -428,6 +432,7 @@ const heroes = [
     hero("Maria Hill", LEADERSHIP, "#404040"),
     hero("Nick Fury", JUSTICE, "#c00000"),
   ),
+  hero("Black Panther", JUSTICE, "#7030a0", { alterEgo: "Shuri" }),
 ];
 
 function flatten(cardsOrSets) {
