@@ -293,7 +293,7 @@ class Modular extends Card {
 
   static get placeholder() {
     if (!this._placeholder) {
-      const card = new this("No modulars needed");
+      const card = new this("No modular sets needed");
       card.frontSrc = card.backSrc = image(this, "back.png");
       this._placeholder = card;
     }
