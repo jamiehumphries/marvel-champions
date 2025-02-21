@@ -1,5 +1,5 @@
-import { hashes } from "./hashes.js?v=00000000";
-import { getItem, setItem } from "./storage.js?v=00ea94bd";
+import { hashes } from "./hashes.js?v=e2c70c8d";
+import { getItem, setItem } from "./storage.js?v=fe539d70";
 
 class Option {
   constructor(

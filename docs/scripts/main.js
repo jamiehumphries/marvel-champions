@@ -1,11 +1,11 @@
-import { Setting, All } from "./options.js?v=4e45bee9";
+import { Setting, All } from "./options.js?v=432547fb";
 import {
   scenarios,
   modulars,
   heroes,
   aspects,
   flatten,
-} from "./cards.js?v=17ba0c0b";
+} from "./cards.js?v=868baff9";
 import {
   initializeStorage,
   clearStorage,
@@ -15,14 +15,14 @@ import {
   setUserId,
   getItem,
   setItem,
-} from "./storage.js?v=00ea94bd";
+} from "./storage.js?v=fe539d70";
 import {
   clearTable,
   renderTable,
   initializeDifficultySettings,
   getTrackedDifficulties,
   isGameCompleted,
-} from "./tracker.js?v=549ed139";
+} from "./tracker.js?v=85a7a0ce";
 
 const cardChangeDelayMs = Number(
   getComputedStyle(document.documentElement)
